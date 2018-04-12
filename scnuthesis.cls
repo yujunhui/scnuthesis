@@ -72,7 +72,8 @@
 \RequirePackage{amsmath,amssymb,bm}
 \RequirePackage[varg]{txfonts}
 \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
-\RequirePackage[CJKnumber,no-math,BoldFont,SlantFont]{xeCJK}
+\RequirePackage[no-math,BoldFont,SlantFont]{xeCJK}
+\RequirePackage{CJKnumb}
 \punctstyle{hangmobanjiao}
 \RequirePackage{ulem}
 \RequirePackage{indentfirst}
