@@ -5,38 +5,43 @@
 %% The original source files were:
 %%
 %% scnuthesis.dtx  (with options: `cls')
-%% 
+%%
 %% !Mode:: "TeX:UTF-8"
-%% 
+%%
 %% This is a generated file.
-%% 
+%%
 %% Copyright (C) 2015 by Joseph Pan <cs.wzpan@gmail.com>
-%% 
+%%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3a
 %% of this license or (at your option) any later version.
 %% The latest version of this license is in:
-%% 
+%%
 %% http://www.latex-project.org/lppl.txt
-%% 
+%%
 %% and version 1.3a or later is part of all distributions of LaTeX
 %% version 2004/10/01 or later.
-%% 
+%%
 %% To produce the documentation run the original source files ending with `.dtx'
 %% through LaTeX.
-%% 
+%%
 %% Any Suggestions : Joseph Pan <cs.wzpan@gmail.com>
 %% Thanks LiuBenYuan <liubenyuan@gmail.com> for the nudtpapre class!
 %% Thanks Xue Ruini <xueruini@gmail.com> for the thuthesis class!
 %% Thanks sofoot for the original NUDT paper class!
-%% 
+%%
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{scnuthesis}
 
-\newif\ifismaster\ismastertrue
-\newif\ifisttf\isttftrue
+% Lion
+
+\newif\ifisbachelor\isbachelorfalse
+\newif\ifismaster\ismasterfalse
+\newif\ifisdocter\isdocterfalse
+\DeclareOption{bachelor}{\isbachelortrue}
 \DeclareOption{master}{\ismastertrue}
-\DeclareOption{doctor}{\ismasterfalse}
+\DeclareOption{doctor}{\isdoctertrue}
+\newif\ifisttf\isttftrue
 \newif\ifisanon\isanonfalse
 \DeclareOption{anon}{\isanontrue}
 \newif\ifistwoside\istwosidefalse
@@ -184,7 +189,12 @@
 \def\CJK@today{\the\year 年 \the\month 月 \the\day 日}
 \newcommand\zhtoday{\CJK@today}
 \newcommand\entoday{\today{}}
-\geometry{top=21mm,bottom=25.5mm,left=30mm,right=30mm}
+% Lion 本科毕业论文左右边距为20mm
+\ifisbachelor
+  \geometry{top=21mm,bottom=25.5mm,left=25mm,right=20mm}
+\else
+  \geometry{top=21mm,bottom=25.5mm,left=30mm,right=30mm}
+\fi
 \geometry{headheight=9mm,headsep=1mm,footskip=10mm}
  \renewcommand\setheadrule[1]{%
     \ifdim#1=\z@
@@ -198,28 +208,38 @@
 
 \renewcommand{\chaptermark}[1]{\markboth{\chaptertitlename~\ #1}{}}
 
+% Lion
+% 本科毕业论文要去页码五号黑体
+% 重用代码, 定义一个命令
+
+\ifisbachelor
+  \def\yema{\wuhao \heiti}
+\else
+  \def\yema{\wuhao \songti}
+\fi
+
 \renewpagestyle{plain}{
 \sethead{}{\raisebox{.65\baselineskip}
-  {
-    \songti \wuhao
-    \ifischapter % 标题作为页眉
-      \ifistwoside
-      {
-        \ifodd \value{page} % 奇数页
-        {\chaptertitle}
-        \else % 偶数页
+    {
+      \songti \wuhao
+      \ifischapter % 标题作为页眉
+        \ifistwoside
+        {
+          \ifodd \value{page} % 奇数页
+          {\chaptertitle}
+          \else % 偶数页
+          {\@displaytitle}\fi
+        }
+        \else
+        {\chaptertitle}\fi
+        \else %标题不作为页眉
         {\@displaytitle}\fi
-      }
-      \else
-      {\chaptertitle}\fi
-      \else %标题不作为页眉
-      {\@displaytitle}\fi
-  }
-}{}
-\headrule%
-\setfoot{}{{\songti \wuhao 第~\thepage~页}}{}%
-\footrule%
-\setfootrule{1bp}
+    }
+  }{}
+  \headrule%
+  \setfoot{}{{\yema 第~\thepage~页}}{}%
+  \footrule%
+  \setfootrule{1bp}
 }
 
 \newpagestyle{mpage}{
@@ -241,7 +261,7 @@
     }
   }{}
   \headrule%
-  \setfoot{}{{\songti \wuhao 第~\thepage~页}}{}%
+  \setfoot{}{{\yema 第~\thepage~页}}{}%
   \footrule%
   \setfootrule{1bp}
 }
@@ -265,7 +285,7 @@
     }
 }{}
 \headrule%
-\setfoot{}{{\songti \wuhao 第~\thepage~页}}{}%
+\setfoot{}{{\yema 第~\thepage~页}}{}%
 \footrule%
 \setfootrule{1bp}
 }
@@ -289,7 +309,7 @@
   }
 }{}
 \headrule%
-\setfoot{}{{\songti \wuhao 第~\thepage~页}}{}%
+\setfoot{}{{\yema 第~\thepage~页}}{}%
 \footrule%
 \setfootrule{1bp}
 }
@@ -313,7 +333,12 @@
   }
 \renewcommand\backmatter{%
     \if@openright\cleardoublepage\else\clearpage\fi
-    \titleformat{\chapter}{\filcenter \heiti \sanhao}{附录\,\thechapter\,}{1em}{}
+    % Lion
+    \ifisbachelor
+      \titleformat{\chapter}{\filcenter \heiti \xiaoer}{附录\,\thechapter\,}{1em}{}
+    \else
+      \titleformat{\chapter}{\filcenter \heiti \sanhao}{附录\,\thechapter\,}{1em}{}
+    \fi
     \titlecontents{chapter}[0pt]{\vspace{0.25\baselineskip} \heiti \xiaosi[1.25]}
       {附录\,\thecontentslabel\quad}{}
       {\hspace{.5em}\titlerule*{.}\contentspage}
@@ -331,64 +356,97 @@
   \clearpage\fi\fi%
 }
 %%
+% Lion 本科毕业论文摘要与硕博毕业论文不一致
 \newcommand\cabstractname{摘\hspace{1em}要}
-\newcommand\ckeywordsname{\hspace{-2em}{\heiti \sihao 关键词：}}
-\newcommand\ckeywords[1]{{\xiaosi \songti \ckeywordsname #1}}
-
 \newcommand\eabstractname{ABSTRACT}
-\newcommand\ekeywordsname{\hspace{-2em}{\textsf{KEY WORDS:}}}
-\newcommand\ekeywords[1]{{\xiaosi \ekeywordsname~#1}}
-\newenvironment{cabstract}{%
-  {\if@openright\cleardoublepage\else\clearpage\fi}%
-  \addcontentsline{toc}{chapter}{\cabstractname}%
-  ~
-  \begin{spacing}{2.0}
-    \begin{center}{\sanhao \hei \@displaytitle}\end{center}%
-  \end{spacing}
-  \xiaosi \vspace{1.4pt}%
-  \ifisanon{}\else{
-  \begin{center}%
-    \begin{tabular}[c]{ll}%
-      专业名称： & \@subject \\%
-      申请者：& \@author \\%
-      导师： & \@supervisor \\%
-    \end{tabular}%
-  \end{center}%
-  }\fi
-  ~\\%
-  ~\\%
-  ~\\%
-  {\heiti\xiaosan \cabstractname} %
+\ifisbachelor %本科毕业论文摘要
+  \newcommand\ckeywordsname{{\xiaosi \heiti 关键词：}}
+  \newcommand\ckeywords[1]{{\ckeywordsname {\xiaosi \songti #1}}}
 
-  % \@afterheading
-}
-{\par\vspace{2em}\par}
+  \newcommand\ekeywordsname{{\xiaosi \heiti \bfseries{KEY WORDS:}}}
+  \newcommand\ekeywords[1]{{\ekeywordsname~{\xiaosi \songti #1}}}
+  \newenvironment{cabstract}{%
+    {\if@openright\cleardoublepage\else\clearpage\fi}%
+    \addcontentsline{toc}{chapter}{\cabstractname}%
+    \begin{center}
+      {\xiaoer \heiti \textbf{\cabstractname}} %
+    \end{center}
+    \xiaosi \songti
 
-\newenvironment{eabstract}{%
-  \if@openright\cleardoublepage\else\clearpage\fi%
-  \addcontentsline{toc}{chapter}{\eabstractname}%
-  ~
-  \begin{spacing}{2.0}
-    \begin{center}{\sanhao \textsf{\@entitle}}\end{center}%
-  \end{spacing}
-  \xiaosi \vspace{1.4pt}
-  \ifisanon{}\else{
-  \begin{center}%
-    \begin{tabular}[c]{ll}%
-      Major： & \@ensubject \\%
-      Name：& \@enauthor \\%
-      Supervisor： & \@ensupervisor \\%
-    \end{tabular}%
-  \end{center}%
-  }\fi
-  ~\\%
-  ~\\%
-  ~\\%
-  {\sihao \textsf \eabstractname} %
+  }
+  {\par\vspace{1em}}
 
-  % \@afterheading
-}
-{\par\vspace{2em}\par}
+  \newenvironment{eabstract}{%
+    \if@openright\cleardoublepage\else\clearpage\fi%
+    \addcontentsline{toc}{chapter}{\eabstractname}%
+    \begin{center}
+      {\xiaoer \heiti \textbf{\eabstractname}} %
+    \end{center}
+    \xiaosi \songti
+
+  }
+  {\par\vspace{1em}}
+
+\else % 硕博毕业论文摘要
+
+  \newcommand\ckeywordsname{\hspace{-2em}{\heiti \sihao 关键词：}}
+  \newcommand\ckeywords[1]{{\xiaosi \songti \ckeywordsname #1}}
+
+  \newcommand\ekeywordsname{\hspace{-2em}{\textsf{KEY WORDS:}}}
+  \newcommand\ekeywords[1]{{\xiaosi \ekeywordsname~#1}}
+  \newenvironment{cabstract}{%
+    {\if@openright\cleardoublepage\else\clearpage\fi}%
+    \addcontentsline{toc}{chapter}{\cabstractname}%
+    ~
+    \begin{spacing}{2.0}
+      \begin{center}{\sanhao \hei \@displaytitle}\end{center}%
+    \end{spacing}
+    \xiaosi \vspace{1.4pt}%
+    \ifisanon{}\else{
+    \begin{center}%
+      \begin{tabular}[c]{ll}%
+        专业名称： & \@subject \\%
+        申请者：& \@author \\%
+        导师： & \@supervisor \\%
+      \end{tabular}%
+    \end{center}%
+    }\fi
+    ~\\%
+    ~\\%
+    ~\\%
+    {\heiti\xiaosan \cabstractname} %
+
+    % \@afterheading
+  }
+  {\par\vspace{2em}\par}
+
+  \newenvironment{eabstract}{%
+    \if@openright\cleardoublepage\else\clearpage\fi%
+    \addcontentsline{toc}{chapter}{\eabstractname}%
+    ~
+    \begin{spacing}{2.0}
+      \begin{center}{\sanhao \textsf{\@entitle}}\end{center}%
+    \end{spacing}
+    \xiaosi \vspace{1.4pt}
+    \ifisanon{}\else{
+    \begin{center}%
+      \begin{tabular}[c]{ll}%
+        Major： & \@ensubject \\%
+        Name：& \@enauthor \\%
+        Supervisor： & \@ensupervisor \\%
+      \end{tabular}%
+    \end{center}%
+    }\fi
+    ~\\%
+    ~\\%
+    ~\\%
+    {\sihao \textsf \eabstractname} %
+
+    % \@afterheading
+  }
+  {\par\vspace{2em}\par}
+\fi
+
 \titlecontents{chapter}[0pt]{\vspace{0.25\baselineskip} \heiti \xiaosi[1.25]}
     {第\CJKnumber{\thecontentslabel}章\quad}{}
     {\hspace{.5em}\titlerule*{.}\contentspage}
@@ -446,13 +504,19 @@
 \titlespacing{\subsubsection}{0em}{1ex}{0ex}
 \renewcommand\normalsize{%
   \xiaosi%
-  \renewcommand{\baselinestretch}{1.4}%
+  % Lion 本科毕业论文要求1.25倍行距
+  \ifisbachelor
+    \renewcommand{\baselinestretch}{1.25}%
+  \else
+    \renewcommand{\baselinestretch}{1.4}%
+  \fi
 \setlength\abovedisplayskip{10bp \@plus 2bp \@minus 2bp}%
 \setlength\abovedisplayshortskip{10bp \@plus 2bp \@minus 2bp}%
 \setlength\belowdisplayskip{\abovedisplayskip}%
 \setlength\belowdisplayshortskip{\abovedisplayshortskip}%
 }
-\setlength{\parindent}{2.5em}
+% Lion 不清楚为什么采用2.5em的缩进 改成了2em
+\setlength{\parindent}{2em}
 \setlength{\parskip}{0bp \@plus .5bp \@minus .5bp}
 \newcommand*{\ziju}[1]{\renewcommand{\CJKglue}{\hskip #1}}
 \renewenvironment{thebibliography}[1]{%
@@ -590,6 +654,9 @@
   \egroup%
   \iftagsleft@ \@xp\lendsplit@ \else \@xp\rendsplit@ \fi%
 }
+
+% Lion 封面不一致
+
 \def\classification#1{\def\@classification{#1}} % 中图分类号
 \def\serialno#1{\def\@serialno{#1}} % 学号
 \def\udc#1{\def\@udc{#1}} % UDC号
@@ -608,84 +675,151 @@
 \def\ensupervisor#1{\def\@ensupervisor{#1}} % 导师英文名
 \def\protitle#1{\def\@protitle{#1}} % 导师的职称
 \def\school#1{\def\@school{#1}} % 学院
+\def\graduatetime#1{\def\@graduatetime{#1}} % 毕业时间
 
-\def\optionpaperclass#1{\def\@optionpaperclass{#1}} % paperclass
-\def\optionpaperclassen#1{\def\@optionpaperclassen{#1}} % paperclass english
-\def\optionas#1{\def\@optionas{#1}} % Advisor OR Supervisor
-\ifismaster
-  \optionpaperclass{硕士}
-  \optionpaperclassen{Master}
-  \optionas{Advisor}
-\else
-  \optionpaperclass{博士}
-  \optionpaperclassen{Doctor}
-  \optionas{Supervisor}
-\fi
-\def\maketitle{%
-  \renewcommand{\baselinestretch}{1.3}%
-  \def\entry##1##2##3{%
-    \multicolumn{##1}{l}{\underline{\hbox to ##2{\hfil##3\hfil}}}
-    }
-  \null
-  \ifisanon%
-  \author{}%
-  \enauthor{}%
-  \supervisor{}%
-  \ensupervisor{}%
-  \protitle{}%
-  \else\relax\fi%
-  \pagenumbering{alph}% not display, for print only
-  \thispagestyle{empty}%
-  \begin{center}\leavevmode % 表格环境
-  \vspace{-2.3cm}
-  {\songti \sihao[1.25]%
-    \begin{tabular}{llcll}
-      分类号：  & \entry{1}{3.2cm}{\@classification}      \hspace*{4.8cm}   %
-      密级： & \entry{1}{3.2cm}{\@confidentiality} \\[5mm]
-      UDC & \entry{1}{3.2cm}{\@udc}     \hspace*{4.8cm}%
-      学号：  & \entry{1}{3.2cm}{\@serialno}
-    \end{tabular}
+\ifisbachelor % 本科毕业论文
+
+  \def\maketitle{%
+    \renewcommand{\baselinestretch}{1.3}%
+    \def\entry##1##2##3{%
+      \multicolumn{##1}{l}{\underline{\hbox to ##2{\hfil##3\hfil}}}
+      }
+    \null
+    \pagenumbering{alph}% not display, for print only
+    \thispagestyle{empty}%
+    \begin{center}\leavevmode % 表格环境
+    \vspace{-2.3cm}
+    \par
+    \vspace*{1.5cm} %插入空白
+    \begin{figure}
+      \begin{minipage}[t]{3cm}
+        \centering
+        \includegraphics[width=2.5cm]{scnu.pdf}\\
+      \end{minipage}%
+      \begin{minipage}[t]{12cm}
+        \centering
+        \includegraphics[width=11cm]{title.pdf}\\
+      \end{minipage}
+    \end{figure}
+    %\vspace{-1.5cm} %文字上移
+    \sanhao\textbf{\textit{South China Normal University}}\\
+    \vspace{0.1cm} %插入空白
+    {\songti \bfseries \yihao \ziju{12pt} 本科毕业论文\\}
+    %\vspace{0.2cm} %插入空白
+    \vspace{1cm} %插入空白
+    \songti \sanhao 论文题目\\
+    \vspace{0.2cm} %插入空白
+    \uline{\songti \sanhao \@title }\\
+    %\vspace{40bp}
+    {\songti \sihao
+      \begin{tabular}{lp{5cm}c}
+        \raisebox{-3.7ex}[0pt]{指导老师} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@supervisor}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{学生姓名} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@author}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{学\hspace{2em}号} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@serialno}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{院\hspace{2em}系} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@school}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{专\hspace{2em}业} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@subject}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{毕业时间} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@graduatetime}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+      \end{tabular}
+    }\\
+    \vspace{1cm}
+    \vspace{1cm}
+    \end{center}%
+    \vspace{1mm}
+    \cleardoublepage%
   }
-  \par
-  \vspace*{1.5cm} %插入空白
-  \includegraphics[width=11cm]{title.pdf}\\
-  %\vspace{-1.5cm} %文字上移
-  \sanhao\textbf{\textit{South China Normal University}}\\
-  \vspace{0.1cm} %插入空白
-  {\songti \bfseries \yihao \ziju{12pt} \@optionpaperclass{}学位论文\\}
+\else % 硕博毕业论文封面
+
+  \def\optionpaperclass#1{\def\@optionpaperclass{#1}} % paperclass
+  \def\optionpaperclassen#1{\def\@optionpaperclassen{#1}} % paperclass english
+  \def\optionas#1{\def\@optionas{#1}} % Advisor OR Supervisor
   \ifismaster
-  \vspace{0.2cm} %插入空白
-  {\songti \xiaosan (\@mastertype 型学位)\\}
+    \optionpaperclass{硕士}
+    \optionpaperclassen{Master}
+    \optionas{Advisor}
+  \else
+    \optionpaperclass{博士}
+    \optionpaperclassen{Doctor}
+    \optionas{Supervisor}
   \fi
-  \vspace{1cm} %插入空白
-  \uline{\songti \xiaoer[1.25] \@title }\\
-  \vspace{40bp}
-  {\songti \sihao
-    \begin{tabular}{lp{5cm}c}
-      \raisebox{-3.7ex}[0pt]{学位申请人} &
-        {\fs \hfil\raisebox{-3.7ex}[0pt]{\@author}\hfil{}} & \\[3.2ex]
-        \cline{2-2}
-      \raisebox{-3.7ex}[0pt]{专业学位名称} &
-        {\fs \hfil\raisebox{-3.7ex}[0pt]{\@subject}\hfil{}} & \\[3.2ex]
-        \cline{2-2}
-      \raisebox{-3.7ex}[0pt]{专业学位领域} &
-        {\fs \hfil\raisebox{-3.7ex}[0pt]{\@researchfield}\hfil{}} & \\[3.2ex]
-        \cline{2-2}
-      \raisebox{-3.7ex}[0pt]{所在院系} &
-        {\fs \hfil\raisebox{-3.7ex}[0pt]{\@school}\hfil{}} & \\[3.2ex]
-        \cline{2-2}
-      \raisebox{-3.7ex}[0pt]{导师姓名及职称} &
-        {\fs \hfil\raisebox{-3.7ex}[0pt]{\@supervisor~\@protitle}\hfil{}} & \\[3.2ex]
-        \cline{2-2}
-    \end{tabular}
-  }\\
-  \vspace{1cm}
-  \@zhdate
-  \vspace{1cm}
-  \end{center}%
-  \vspace{1mm}
-  \cleardoublepage%
-}
+  \def\maketitle{%
+    \renewcommand{\baselinestretch}{1.3}%
+    \def\entry##1##2##3{%
+      \multicolumn{##1}{l}{\underline{\hbox to ##2{\hfil##3\hfil}}}
+      }
+    \null
+    \ifisanon%
+    \author{}%
+    \enauthor{}%
+    \supervisor{}%
+    \ensupervisor{}%
+    \protitle{}%
+    \else\relax\fi%
+    \pagenumbering{alph}% not display, for print only
+    \thispagestyle{empty}%
+    \begin{center}\leavevmode % 表格环境
+    \vspace{-2.3cm}
+    {\songti \sihao[1.25]%
+      \begin{tabular}{llcll}
+        分类号：  & \entry{1}{3.2cm}{\@classification}      \hspace*{4.8cm}   %
+        密级： & \entry{1}{3.2cm}{\@confidentiality} \\[5mm]
+        UDC & \entry{1}{3.2cm}{\@udc}     \hspace*{4.8cm}%
+        学号：  & \entry{1}{3.2cm}{\@serialno}
+      \end{tabular}
+    }
+    \par
+    \vspace*{1.5cm} %插入空白
+    \includegraphics[width=11cm]{title.pdf}\\
+    %\vspace{-1.5cm} %文字上移
+    \sanhao\textbf{\textit{South China Normal University}}\\
+    \vspace{0.1cm} %插入空白
+    {\songti \bfseries \yihao \ziju{12pt} \@optionpaperclass{}学位论文\\}
+    \ifismaster
+    \vspace{0.2cm} %插入空白
+    {\songti \xiaosan (\@mastertype 型学位)\\}
+    \fi
+    \vspace{1cm} %插入空白
+    \uline{\songti \xiaoer[1.25] \@title }\\
+    \vspace{40bp}
+    {\songti \sihao
+      \begin{tabular}{lp{5cm}c}
+        \raisebox{-3.7ex}[0pt]{学位申请人} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@author}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{专业学位名称} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@subject}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{专业学位领域} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@researchfield}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{所在院系} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@school}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+        \raisebox{-3.7ex}[0pt]{导师姓名及职称} &
+          {\fs \hfil\raisebox{-3.7ex}[0pt]{\@supervisor~\@protitle}\hfil{}} & \\[3.2ex]
+          \cline{2-2}
+      \end{tabular}
+    }\\
+    \vspace{1cm}
+    \@zhdate
+    \vspace{1cm}
+    \end{center}%
+    \vspace{1mm}
+    \cleardoublepage%
+  }
+\fi
+
 \endinput
 %%
 %% End of file `scnuthesis.cls'.
