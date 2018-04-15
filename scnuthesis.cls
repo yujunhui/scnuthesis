@@ -58,8 +58,8 @@
 \ifistwoside
   \LoadClass[a4paper,12pt,openright,twoside]{book}
 \else
-  \LoadClass[a4paper,12pt,openany]{book}
-  \fi
+  \LoadClass[a4paper,12pt,openany,oneside]{book}
+\fi
 \RequirePackage[includeheadfoot]{geometry}
 \RequirePackage[center,pagestyles]{titlesec}
 \RequirePackage{titletoc}
