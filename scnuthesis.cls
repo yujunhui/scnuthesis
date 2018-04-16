@@ -77,7 +77,7 @@
 \RequirePackage{amsmath,amssymb,bm}
 \RequirePackage[varg]{txfonts}
 \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
-\RequirePackage[no-math,BoldFont,SlantFont]{xeCJK}
+\RequirePackage{xeCJK}
 \RequirePackage{CJKnumb}
 \punctstyle{hangmobanjiao}
 \RequirePackage{ulem}
@@ -368,6 +368,7 @@
   \newenvironment{cabstract}{%
     {\if@openright\cleardoublepage\else\clearpage\fi}%
     \addcontentsline{toc}{chapter}{\cabstractname}%
+    ~%
     \begin{center}
       {\xiaoer \heiti \textbf{\cabstractname}} %
     \end{center}
@@ -379,6 +380,7 @@
   \newenvironment{eabstract}{%
     \if@openright\cleardoublepage\else\clearpage\fi%
     \addcontentsline{toc}{chapter}{\eabstractname}%
+    ~%
     \begin{center}
       {\xiaoer \heiti \textbf{\eabstractname}} %
     \end{center}
