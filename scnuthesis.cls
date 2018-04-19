@@ -694,6 +694,7 @@
     \par
     \vspace*{1.5cm} %插入空白
     \begin{figure}
+      \centering
       \begin{minipage}[t]{3cm}
         \centering
         \includegraphics[width=2.5cm]{scnu.pdf}\\
